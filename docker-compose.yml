@@ -1,0 +1,86 @@
+version: '3'
+services:
+  mongo:
+    image: mongo
+    restart: always
+    volumes:
+      - mongodata:/data/db
+    ports:
+      - '27017:27017'
+    environment:
+      MONGO_INITDB_DATABASE: test
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: secret
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: secret
+      ME_CONFIG_MONGODB_URL: mongodb://root:secret@mongo:27017/
+    depends_on:
+      - mongo
+
+  gateway:
+    build:
+      context: .
+      dockerfile: ./apps/gateway/Dockerfile
+      target: development
+    command: pnpm start:dev gateway
+    ports:
+      - 3000:3000
+    environment:
+      - PORT=3000
+      - HOST=0.0.0.0
+      - AUTH_HOST=auth
+      - AUTH_PORT=3001
+      - FLASHCARD_HOST=flashcard
+      - FLASHCARD_PORT=3002
+    volumes:
+      - .:/dev/gateway
+    depends_on:
+      - auth
+      - flashcard
+
+  auth:
+    build:
+      context: .
+      dockerfile: ./apps/auth/Dockerfile
+      target: development
+    command: pnpm start:dev auth
+    ports:
+      - 3001:3001
+    environment:
+      - MONGO_URI=mongodb://root:secret@mongo:27017
+      - PORT=3001
+      - HOST=0.0.0.0
+    volumes:
+      - .:/dev/auth
+    depends_on:
+      - mongo
+
+  flashcard:
+    build:
+      context: .
+      dockerfile: ./apps/flashcard/Dockerfile
+      target: development
+    command: pnpm start:dev flashcard
+    ports:
+      - 3002:3002
+    environment:
+      - PORT=3002
+      - HOST=0.0.0.0
+      - MONGO_URI=mongodb://root:secret@mongo:27017
+      - AUTH_HOST=auth
+      - AUTH_PORT=3001
+    volumes:
+      - .:/dev/flashcard
+    depends_on:
+      - mongo
+      - auth
+
+volumes:
+  mongodata:
