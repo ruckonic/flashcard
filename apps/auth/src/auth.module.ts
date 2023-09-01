@@ -13,7 +13,7 @@ import { JwtModule, JwtService } from '@nestjs/jwt'
       useFactory(configService: ConfigService) {
         return {
           uri: configService.get('MONGO_URI'),
-          dbName: 'auth',
+          dbName: configService.get('MONGO_DB_NAME'),
           useNewUrlParser: true,
         }
       },
@@ -25,7 +25,17 @@ import { JwtModule, JwtService } from '@nestjs/jwt'
         schema: UserSchema,
       },
     ]),
-    JwtModule.register({ secret: 'secret', signOptions: { expiresIn: '10d' } }),
+    JwtModule.registerAsync({
+      useFactory(configService: ConfigService) {
+        return {
+          secret: configService.get('JWT_SECRET'),
+          signOptions: {
+            expiresIn: configService.get('JWT_EXPIRES_IN'),
+          },
+        }
+      },
+      inject: [ConfigService],
+    }),
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtService],
