@@ -54,9 +54,12 @@ services:
     ports:
       - 3001:3001
     environment:
-      - MONGO_URI=mongodb://root:secret@mongo:27017
       - PORT=3001
       - HOST=0.0.0.0
+      - MONGO_URI=mongodb://root:secret@mongo:27017
+      - MONGO_DB_NAME=auth
+      - JWT_SECRET=secret
+      - JWT_EXPIRES_IN=10d
     volumes:
       - .:/dev/auth
     depends_on:
