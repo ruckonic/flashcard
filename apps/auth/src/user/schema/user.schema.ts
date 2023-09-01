@@ -1,10 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
-import { HydratedDocument, Model, SchemaTypes, Types } from 'mongoose'
+import { HydratedDocument, Model, Types } from 'mongoose'
 import * as bcrypt from 'bcrypt'
 
-@Schema({ timestamps: true, versionKey: false })
+@Schema({ timestamps: true, versionKey: false, _id: true })
 export class User {
-  @Prop({ type: SchemaTypes.ObjectId })
   _id: Types.ObjectId
 
   @Prop()

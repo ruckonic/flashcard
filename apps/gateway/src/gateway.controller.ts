@@ -1,22 +1,27 @@
-import { Controller, Get } from '@nestjs/common'
+import { Controller, Delete, Get, Put } from '@nestjs/common'
 import { GatewayService } from './gateway.service'
-import { firstValueFrom } from 'rxjs'
 
 @Controller()
 export class GatewayController {
   constructor(private readonly gatewayService: GatewayService) {}
 
   @Get('/flashcard')
-  async getHello() {
-    const dat = await firstValueFrom(this.gatewayService.getFlashcardHello())
-
-    return dat
+  async getFlashcards() {
+    return []
   }
 
-  @Get('/sum')
-  async getSum() {
-    const dat = await firstValueFrom(this.gatewayService.getSum())
+  @Get('/flashcard/:id')
+  async getFlashcard() {
+    return {}
+  }
 
-    return dat
+  @Delete('/flashcard/:id')
+  async deleteFlashcard() {
+    return {}
+  }
+
+  @Put('/flashcard/:id')
+  async updateFlashcard() {
+    return {}
   }
 }

@@ -77,6 +77,7 @@ services:
       - PORT=3002
       - HOST=0.0.0.0
       - MONGO_URI=mongodb://root:secret@mongo:27017
+      - MONGO_DB_NAME=flashcard
       - AUTH_HOST=auth
       - AUTH_PORT=3001
     volumes:

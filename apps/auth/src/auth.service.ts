@@ -17,7 +17,7 @@ export class AuthService {
       throw new BadRequestException('Invalid credentials')
     }
 
-    const isValid = user.comparePassword(password)
+    const isValid = await user.comparePassword(password)
 
     if (!isValid) {
       throw new BadRequestException('Invalid credentials')

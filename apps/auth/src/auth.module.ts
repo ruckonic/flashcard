@@ -4,7 +4,7 @@ import { AuthService } from './auth.service'
 import { MongooseModule } from '@nestjs/mongoose'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { User, UserSchema } from './user/schema/user.schema'
-import { JwtModule, JwtService } from '@nestjs/jwt'
+import { JwtModule } from '@nestjs/jwt'
 
 @Module({
   imports: [
@@ -27,6 +27,7 @@ import { JwtModule, JwtService } from '@nestjs/jwt'
     ]),
     JwtModule.registerAsync({
       useFactory(configService: ConfigService) {
+        console.log('JWT Modi', configService.get('JWT_SECRET'))
         return {
           secret: configService.get('JWT_SECRET'),
           signOptions: {
@@ -38,6 +39,6 @@ import { JwtModule, JwtService } from '@nestjs/jwt'
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtService],
+  providers: [AuthService],
 })
 export class AuthModule {}
