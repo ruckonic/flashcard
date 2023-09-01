@@ -1,12 +1,14 @@
+import { ConfigService } from '@nestjs/config'
+import { ValidationPipe } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
 import { MicroserviceOptions, Transport } from '@nestjs/microservices'
-import { AuthModule } from './auth.module'
-import { ConfigService } from '@nestjs/config'
+
+import { AppModule } from './app.module'
 
 async function bootstrap() {
   const configService = new ConfigService()
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
-    AuthModule,
+    AppModule,
     {
       transport: Transport.TCP,
       options: {
@@ -15,6 +17,8 @@ async function bootstrap() {
       },
     },
   )
+
+  app.useGlobalPipes(new ValidationPipe())
   await app.listen()
 }
 bootstrap()
