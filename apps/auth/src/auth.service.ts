@@ -6,13 +6,17 @@ import { User, UserModel } from './user/schema/user.schema'
 @Injectable()
 export class AuthService {
   constructor(
-    private jwtService: JwtService,
-    @InjectModel(User.name)
-    private userModel: UserModel,
+    private readonly jwtService: JwtService,
+    @InjectModel(User.name) private readonly userModel: UserModel,
   ) {}
 
-  async login(email: string, password: string) {
+  async signin(email: string, password: string) {
     const user = await this.userModel.findOne({ email })
+
+    if (!user) {
+      throw new BadRequestException('Invalid credentials')
+    }
+
     const isValid = user.comparePassword(password)
 
     if (!isValid) {
